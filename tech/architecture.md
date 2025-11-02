@@ -306,6 +306,405 @@ autonomy_config = {
 3. **链路追踪**：Jaeger / Zipkin
 4. **告警**：AlertManager
 
+## 弥补 AI 的缩放局限
+
+> 核心理念：AI 难以主动缩放尺度和质疑框架（见 [PHILOSOPHY.md](../PHILOSOPHY.md)），我们通过**系统设计**来弥补这个局限。
+
+### 挑战
+
+AI（特别是 LLM）的缩放能力有根本限制：
+1. **固定上下文窗口**：难以处理超大尺度的信息
+2. **被动处理**：不能主动选择思考尺度
+3. **难以元推理**：很难跳出训练框架质疑问题本身
+4. **缺乏驱动力**：没有真实目标驱动缩放的必要性
+
+### 我们的技术策略
+
+#### 策略 1：多尺度视图系统
+
+**不等AI自己缩放，系统主动展示多个尺度**
+
+**Workbench 实现**：
+```python
+# 多尺度数据聚合服务
+class MultiScaleDataService:
+    """
+    同时维护多个时间尺度的数据视图
+    """
+    def get_multi_scale_view(self, entity_id: str):
+        return {
+            "micro": self.get_realtime(entity_id),      # 实时（秒级）
+            "short": self.get_hourly(entity_id),         # 短期（小时）
+            "medium": self.get_daily(entity_id),         # 中期（天）
+            "long": self.get_monthly(entity_id),         # 长期（月）
+            "strategic": self.get_yearly(entity_id)      # 战略（年）
+        }
+
+# 前端自动切换尺度
+class ScaleAwareComponent:
+    """
+    根据用户任务自动选择合适尺度
+    """
+    def render(self, task_type):
+        if task_type == "monitor":
+            return self.render_realtime_view()
+        elif task_type == "analyze":
+            return self.render_daily_view()
+        elif task_type == "plan":
+            return self.render_monthly_view()
+```
+
+**Skills层提供缩放能力**：
+```python
+class ScaleSkill:
+    """
+    专门的缩放 skill
+    """
+    def zoom_out(self, current_view, levels=1):
+        """
+        放大视野（更高尺度）
+        例：从"今天"到"本周"到"本月"
+        """
+        pass
+
+    def zoom_in(self, current_view, levels=1):
+        """
+        缩小视野（更低尺度）
+        例：从"本月"到"本周"到"今天"
+        """
+        pass
+
+    def compare_scales(self, entity, scales):
+        """
+        并排对比不同尺度的视图
+        """
+        pass
+```
+
+#### 策略 2：缩放提示引擎
+
+**AI在单一尺度优化时，系统主动提醒其他尺度**
+
+**实现方案**：
+```python
+class ScaleReminderEngine:
+    """
+    监控AI的决策，提醒被忽视的尺度
+    """
+    def analyze_decision(self, ai_decision):
+        """
+        分析AI决策在哪个尺度上
+        提醒其他尺度的风险
+        """
+        current_scale = self.detect_scale(ai_decision)
+
+        reminders = []
+
+        # 时间尺度提醒
+        if current_scale.time == "short_term":
+            reminders.append({
+                "scale": "long_term",
+                "message": "这个决策短期省电20%，但长期可能影响设备寿命"
+            })
+
+        # 空间尺度提醒
+        if current_scale.space == "single_device":
+            reminders.append({
+                "scale": "system_wide",
+                "message": "单个设备优化了，但可能影响整体平衡"
+            })
+
+        # 抽象层级提醒
+        if current_scale.abstraction == "operational":
+            reminders.append({
+                "scale": "strategic",
+                "message": "这符合'用户价值优先'的战略原则吗？"
+            })
+
+        return reminders
+```
+
+**展示给人类**：
+```
+AI建议：降低3F温度到20°C，节能15%
+
+⚠️ 系统提醒：
+┌─────────────────────────────────────┐
+│ 从其他尺度看看？                    │
+├─────────────────────────────────────┤
+│ [短期] ✓ 本周节省¥500               │
+│ [长期] ⚠️ 本年投诉可能增加15%       │
+│ [用户] ⚠️ 3F有孕妇，温度敏感        │
+│ [战略] ❓ 是否符合"舒适优先"原则？  │
+└─────────────────────────────────────┘
+```
+
+#### 策略 3：元层控制系统
+
+**人类可以轻松切换到元层，质疑框架**
+
+**Skills 设计**：
+```python
+class MetaSkill:
+    """
+    元层能力：质疑和重构框架
+    """
+    def question_goal(self, current_goal):
+        """
+        质疑当前目标
+        """
+        return {
+            "goal": current_goal,
+            "questions": [
+                "这个目标本身合理吗？",
+                "我们是否在优化错误的指标？",
+                "有没有更高层的目标？"
+            ],
+            "alternatives": self.suggest_alternatives(current_goal)
+        }
+
+    def reframe_problem(self, problem):
+        """
+        重新定义问题
+        """
+        pass
+```
+
+**Workbench 界面**：
+```
+当前优化目标：节能20%
+
+[质疑这个目标] ← 随时可点击进入元层
+
+┌─────────────────────────────────────┐
+│ 元层思考                             │
+├─────────────────────────────────────┤
+│ 问题：                               │
+│ - 节能是最终目标吗？                 │
+│ - 用户真正在乎的是什么？             │
+│ - 这个指标能代表用户价值吗？         │
+│                                      │
+│ 替代目标：                           │
+│ ○ 提升用户满意度（能耗是手段）       │
+│ ○ 降低总成本（不只是电费）           │
+│ ○ 实现碳中和（更高层目标）           │
+│                                      │
+│ [重新定义目标] [保持当前目标]        │
+└─────────────────────────────────────┘
+```
+
+#### 策略 4：反馈驱动的缩放学习
+
+**从人类的缩放行为中学习**
+
+**实现**：
+```python
+class ScaleLearningSystem:
+    """
+    记录和学习人类的缩放行为
+    """
+    def record_scale_switch(self, user_id, context, from_scale, to_scale, reason):
+        """
+        记录用户的尺度切换
+        """
+        self.db.insert({
+            "user": user_id,
+            "context": context,
+            "from": from_scale,
+            "to": to_scale,
+            "reason": reason,
+            "timestamp": now()
+        })
+
+    def learn_patterns(self):
+        """
+        分析模式：
+        - 什么情况下，人类倾向于切换到哪个尺度？
+        - 哪些尺度经常被忽视？
+        """
+        patterns = self.analyze_switch_patterns()
+        return self.generate_prompts(patterns)
+
+    def improve_ai_prompts(self):
+        """
+        基于学习到的模式，改进AI的提示词
+        使AI更倾向于考虑常被忽视的尺度
+        """
+        pass
+```
+
+**效果**：
+- AI 逐渐学会"什么时候应该考虑长期影响"
+- 系统提醒越来越精准
+- 但人类始终保留最终决策权
+
+#### 策略 5：Skills 的元能力设计
+
+**专门设计支持缩放的 Skills**
+
+**元能力 Skills**：
+```python
+# 1. 尺度切换 Skill
+class ScaleSwitchSkill:
+    def switch_time_scale(self, from_scale, to_scale):
+        """从一个时间尺度切换到另一个"""
+        pass
+
+    def switch_abstraction_level(self, from_level, to_level):
+        """从一个抽象层级切换到另一个"""
+        pass
+
+# 2. 框架质疑 Skill
+class FrameworkQuestionSkill:
+    def question_assumption(self, assumption):
+        """质疑一个假设"""
+        pass
+
+    def list_alternatives(self, current_framework):
+        """列出替代框架"""
+        pass
+
+# 3. 多视角 Skill
+class MultiPerspectiveSkill:
+    def get_stakeholder_view(self, decision, stakeholder):
+        """获取某个利益相关者的视角"""
+        pass
+
+    def compare_perspectives(self, decision, stakeholders):
+        """对比多个视角"""
+        pass
+```
+
+### 技术实现要点
+
+#### 1. 数据架构
+
+**多时间尺度的数据存储**：
+```sql
+-- 原始数据（秒级）
+CREATE TABLE raw_data (
+    id SERIAL,
+    timestamp TIMESTAMPTZ,
+    sensor_id VARCHAR,
+    value FLOAT
+);
+
+-- 预聚合（小时级）
+CREATE TABLE hourly_aggregates (
+    hour TIMESTAMPTZ,
+    sensor_id VARCHAR,
+    avg FLOAT,
+    min FLOAT,
+    max FLOAT
+);
+
+-- 预聚合（天级）
+CREATE TABLE daily_aggregates (...);
+
+-- 预聚合（月级）
+CREATE TABLE monthly_aggregates (...);
+```
+
+**查询优化**：
+- 用户请求不同尺度时，直接查询对应的聚合表
+- 快速响应，支持流畅的尺度切换
+
+#### 2. 前端架构
+
+**状态管理**：
+```typescript
+// 全局状态
+interface GlobalState {
+    currentScale: {
+        time: 'realtime' | 'hourly' | 'daily' | 'monthly' | 'yearly',
+        space: 'device' | 'zone' | 'building' | 'all',
+        abstraction: 'data' | 'operation' | 'strategy' | 'goal'
+    },
+    scaleHistory: Scale[],  // 允许"返回上一个尺度"
+    reminderConfig: {
+        enabled: boolean,
+        frequency: number
+    }
+}
+
+// 尺度切换
+function switchScale(newScale: Scale) {
+    // 1. 保存当前尺度到历史
+    state.scaleHistory.push(state.currentScale);
+
+    // 2. 切换到新尺度
+    state.currentScale = newScale;
+
+    // 3. 重新加载对应尺度的数据
+    refetchDataForScale(newScale);
+
+    // 4. 记录切换行为（用于学习）
+    recordScaleSwitch(user, currentContext, oldScale, newScale);
+}
+```
+
+#### 3. AI Prompt 设计
+
+**在 Operation 层的 Prompt 中嵌入缩放提示**：
+```python
+system_prompt = """
+你是一个HVAC优化AI。在做决策时，请考虑多个尺度：
+
+时间尺度：
+- 短期（今天）：立即效果
+- 中期（本月）：趋势和模式
+- 长期（本年）：战略影响
+
+空间尺度：
+- 设备层：单个设备性能
+- 区域层：区域间协调
+- 系统层：整体优化
+
+抽象层级：
+- 数据层：传感器数据是否准确？
+- 操作层：控制策略是否合理？
+- 目标层：优化目标是否正确？
+
+在给出建议时：
+1. 明确你在哪个尺度上思考
+2. 提醒可能在其他尺度上的风险
+3. 如果不确定，说明需要人类在什么尺度上决策
+"""
+```
+
+### 演进计划
+
+**第一阶段（MVP）**：
+- 多尺度视图（至少3个时间尺度）
+- 基础的缩放提示
+- 元层控制界面
+
+**第二阶段**：
+- 缩放学习系统
+- 更智能的提示
+- 完整的元能力 Skills
+
+**第三阶段**：
+- AI 主动建议缩放（但人类决策）
+- 个性化的缩放偏好
+- 团队协作的缩放（多人共享视图）
+
+### 成功指标
+
+如何判断我们弥补AI缩放局限的效果？
+
+1. **用户行为**：
+   - 用户主动切换尺度的频率（> 每次会话3次）
+   - 用户采纳系统缩放提醒的比例（> 40%）
+
+2. **决策质量**：
+   - 重大决策前，考虑的尺度数量（> 3个）
+   - 后悔决策的比例下降（< 5%）
+
+3. **AI 改进**：
+   - AI 提示的相关性（> 80% 用户认为有帮助）
+   - AI 自发考虑多尺度的频率（通过 prompt 分析）
+
 ## 演进路线
 
 ### 第一阶段：MVP (当前)
