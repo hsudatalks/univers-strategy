@@ -11,8 +11,9 @@
 ### 新人入门
 1. [核心哲学](PHILOSOPHY.md) - 理解 Univers 是什么，为什么这样设计
 2. [三层架构决策](decisions/001-三层架构设计.md) - 理解系统架构
-3. [垂直知识决策](decisions/002-vertical-knowledge-management.md) - 理解我们的护城河
-4. [产品设计原则](product/design-principles.md) - 如何设计产品
+3. [AI执行者定位](decisions/003-ai-executor-positioning.md) - 理解我们的核心价值
+4. [垂直知识决策](decisions/002-vertical-knowledge-management.md) - 理解我们的护城河
+5. [产品设计原则](product/design-principles.md) - 如何设计产品
 
 ### 技术人员
 - [系统架构](tech/architecture.md) - 技术实现细节
@@ -73,7 +74,8 @@ univers-strategy/
 └── decisions/            # 决策记录 (ADR)
     ├── README.md                # ADR 模板说明
     ├── 001-三层架构设计.md       # 核心架构决策 ✓
-    └── 002-vertical-knowledge-management.md  # 垂直知识管理决策 ✓
+    ├── 002-vertical-knowledge-management.md  # 垂直知识管理决策 ✓
+    └── 003-ai-executor-positioning.md  # AI执行者定位决策 ✓
 ```
 
 **说明**：
@@ -99,6 +101,7 @@ Univers 的"宪法"，定义：
 **现有决策**：
 - [001-三层架构设计](decisions/001-三层架构设计.md) - Workbench/Skills/Operation 三层架构
 - [002-垂直知识管理](decisions/002-vertical-knowledge-management.md) - 三层知识模型和平台化战略
+- [003-AI执行者定位](decisions/003-ai-executor-positioning.md) - 填补"人管人"与"一个人单干"之间的空白
 
 ### 技术战略 (tech/)
 
