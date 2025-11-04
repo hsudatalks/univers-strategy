@@ -49,8 +49,15 @@
 **3. 业务层面：垂直知识的价值重构**
 - AI 时代，垂直知识分三层：可编码（AI 优势）、情境（人机协作）、元层（人类优势）
 - 我们的护城河：元层洞察库 + 专家网络
-- 商业模式：从"卖工具"到"卖知识平台"
+- 商业模式：从"卖工具"到"卖服务" - AI 驱动的专业服务，按价值收费
 - 详见 [business/knowledge-strategy.md](business/knowledge-strategy.md) 和 [decisions/002-vertical-knowledge-management.md](decisions/002-vertical-knowledge-management.md)
+
+**4. 商业模式：服务为主，而非 SaaS**
+- AI 时代，客户买结果不买工具（"SaaS 已死"趋势）
+- Univers 定位为"AI 驱动的专业服务公司"，而非 SaaS 平台
+- Workbench 主要是内部工具（90%），用于规模化服务
+- 按价值/结果收费，而非订阅模式
+- 详见 [ADR 004: 服务vs平台模式](decisions/004-service-vs-platform-model.md) 和 [SaaS 已死分析](decisions/004-appendix-saas-is-dead.md)
 
 ## 目录结构
 
@@ -176,7 +183,7 @@ AI 时代，垂直领域知识的价值正在重构，需要区分三个层次�
 **为什么重要**：
 - 元层知识是 AI 无法替代的
 - 构建"元层驱动，AI 执行"的商业模式
-- 从"卖工具"到"卖知识平台"
+- 从"卖工具"到"卖服务" - 提供 AI 驱动的专业服务
 
 详见 [PHILOSOPHY.md](PHILOSOPHY.md) 第 5 节和 [business/knowledge-strategy.md](business/knowledge-strategy.md)
 
