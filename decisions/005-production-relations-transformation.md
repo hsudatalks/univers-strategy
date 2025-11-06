@@ -163,8 +163,15 @@
 
 **投资成本**：
 - 表面：$200K/年
-- **真实**：$1.49M累计（系统开发+知识编码+迭代优化）
+- **真实**：$1.49M累计（专业系统开发+迭代优化）
 - **盈亏平衡**：Year 3
+
+> **技术说明**：这里的"专业系统开发"指开发软件系统（代码），例如：
+> - 代码质量检查引擎（pattern detection, architecture validation）
+> - HVAC优化系统（sensor analysis, control optimization）
+> - 性能基准测试工具、自动化CI/CD管道
+>
+> 不是编写文档。详见：[005-9: 技术基础设施详解](./005-series/005-9-technical-infrastructure.md)
 
 **时间成本**：
 - Month 1-3：净负担150%（学习期）
@@ -236,6 +243,38 @@ Workbench模式:
 
 > **完整案例**：[005-8: Workbench百万行代码库实践](./005-series/005-8-workbench-case-study.md) ⭐⭐⭐
 
+### 技术实现简述
+
+Workbench的成功依赖于三层架构：
+
+```yaml
+第一层: 专业系统（hvac-workbench）
+  - 代码质量检查引擎（软件系统，非文档）
+    * pattern-detector (检测问题模式)
+    * architecture-validator (架构验证)
+  - HVAC优化算法（计算系统）
+    * control-optimizer (控制优化)
+    * sensor-analyzer (传感器分析)
+  - 性能分析工具、测试框架
+
+第二层: Skills工具接口
+  - bin/check-quality (调用检查引擎的脚本)
+  - bin/optimize-hvac (调用优化系统的脚本)
+  - 返回结构化数据（JSON）
+
+第三层: Claude的角色
+  - 调用Skills工具
+  - 理解工具输出
+  - 做决策（执行/升级人类）
+```
+
+**关键理解**：
+- $1M投资不是"写文档"，而是**开发hvac-workbench系统（代码）**
+- Claude不需要懂HVAC专业知识，只需要**会用专业工具**
+- 专业逻辑编码在系统中，Claude是"会用工具的智能助手"
+
+> **技术深度解析**：[005-9: 技术基础设施详解](./005-series/005-9-technical-infrastructure.md) ⭐⭐⭐
+
 ---
 
 ## 六、对Univers战略的启示
@@ -287,7 +326,7 @@ Univers服务:
 
 **价值拆解**：
 - 技术：构建可靠AI执行系统
-- 知识：HVAC专业知识编码
+- 系统：HVAC专业系统开发（优化算法、传感器分析、控制逻辑等）
 - 资本：吸收$1M+前期投资
 - 时间：承担6-12个月磨合期
 - 风险：承担单点故障风险

@@ -19,6 +19,46 @@
 
 ---
 
+## 技术架构澄清
+
+**重要说明**：在阅读本案例前，需要理解Workbench的技术架构本质。
+
+```yaml
+常见误解:
+  Workbench = SKILL.md文档 + Claude学习知识 + 自己执行
+
+实际架构:
+
+  第一层: 专业系统（hvac-workbench）⭐核心投资⭐
+    - 代码质量检查引擎（软件代码，非文档）
+      * pattern-detector.ts (AST分析、问题模式识别)
+      * architecture-validator.ts (架构一致性验证)
+      * complexity-analyzer.ts (复杂度分析)
+    - HVAC优化系统（计算系统）
+      * control-optimizer.ts (控制逻辑优化算法)
+      * sensor-analyzer.ts (传感器数据分析)
+      * energy-calculator.ts (能耗计算)
+    - 性能基准测试、CI/CD管道、测试框架
+
+  第二层: Skills工具接口
+    - bin/check-quality (调用检查引擎的脚本)
+    - bin/optimize-hvac (调用优化系统的脚本)
+    - 返回JSON格式的结构化数据
+
+  第三层: Claude的角色
+    - 调用Skills工具 → 理解输出 → 做决策
+
+关键理解:
+  1. $1M投资不是"写文档"，而是开发hvac-workbench系统（代码）
+  2. Claude不需要"懂HVAC"或"懂架构"，只需要会用专业工具
+  3. 专业逻辑编码在系统中，不是在SKILL.md文档中
+  4. "质量门禁"是软件系统，不是文字规则
+```
+
+这个架构设计是Workbench成功的技术基础。详见：[ADR 005-9: 技术基础设施详解](./005-9-technical-infrastructure.md)
+
+---
+
 ## 一、案例背景
 
 ### 1.1 项目概况
@@ -319,7 +359,7 @@ Workbench模式不适合:
    原因: 磨合期成本收不回
 
 ❌ 一次性开发
-   原因: 无法复用AI训练
+   原因: 无法复用系统开发投资
 
 ❌ 高创意性项目
    原因: 质量难以客观度量
